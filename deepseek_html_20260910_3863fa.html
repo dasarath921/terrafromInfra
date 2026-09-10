@@ -1,0 +1,1886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Management System — Full Documentation</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  :root {
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --code-bg: #1e293b;
+    --code-text: #e2e8f0;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #3b82f6;
+  }
+  
+  body {
+    font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 16px;
+  }
+  
+  .container {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    max-width: 1400px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+  
+  .sidebar {
+    background: var(--card);
+    border-right: 1px solid var(--border);
+    padding: 2rem 1.5rem;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  
+  .sidebar h1 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+  }
+  
+  .sidebar .subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .sidebar nav a {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    transition: all 0.15s;
+    margin-bottom: 0.15rem;
+  }
+  
+  .sidebar nav a:hover {
+    background: #f1f5f9;
+    color: var(--primary);
+  }
+  
+  .sidebar nav a.active {
+    background: #eef2ff;
+    color: var(--primary);
+    font-weight: 600;
+  }
+  
+  .main {
+    padding: 3rem 3rem 6rem;
+    max-width: 900px;
+  }
+  
+  .main > h1 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, #0f172a 0%, #4f46e5 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+  }
+  
+  .hero-subtitle {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid var(--border);
+  }
+  
+  h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+  
+  h2:first-of-type {
+    margin-top: 0;
+    border-top: none;
+    padding-top: 0;
+  }
+  
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-muted);
+  }
+  
+  p { margin-bottom: 1rem; }
+  
+  ul, ol {
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  li { margin-bottom: 0.35rem; }
+  
+  strong { font-weight: 600; color: var(--text); }
+  
+  a {
+    color: var(--primary);
+    text-decoration: none;
+  }
+  
+  a:hover { text-decoration: underline; }
+  
+  code {
+    font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+    background: #f1f5f9;
+    color: #be185d;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.875em;
+  }
+  
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 1.25rem;
+    border-radius: 10px;
+    overflow-x: auto;
+    margin-bottom: 1.25rem;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  
+  pre code {
+    background: none;
+    color: inherit;
+    padding: 0;
+    font-size: inherit;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 1.5rem;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  
+  thead {
+    background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
+  }
+  
+  th {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    font-weight: 700;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    vertical-align: top;
+  }
+  
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #f8fafc; }
+  
+  /* Problem cards */
+  .problem {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--danger);
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.25rem;
+    transition: all 0.2s;
+  }
+  
+  .problem:hover {
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+  }
+  
+  .problem .problem-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .problem .problem-num {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--danger);
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+  
+  .problem .problem-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+    flex: 1;
+  }
+  
+  .problem .problem-section {
+    margin-bottom: 0.75rem;
+    padding-left: 2.5rem;
+  }
+  
+  .problem .problem-section:last-child {
+    margin-bottom: 0;
+  }
+  
+  .problem .problem-label {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    margin-bottom: 0.35rem;
+  }
+  
+  .problem .problem-label.symptom { background: #fee2e2; color: #991b1b; }
+  .problem .problem-label.cause   { background: #fef3c7; color: #92400e; }
+  .problem .problem-label.fix     { background: #d1fae5; color: #065f46; }
+  .problem .problem-label.lesson  { background: #e0e7ff; color: #3730a3; }
+  
+  .problem .problem-section p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text);
+  }
+  
+  .problem .problem-section pre {
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+    padding: 0.75rem 1rem;
+    font-size: 0.8rem;
+  }
+  
+  .callout {
+    padding: 1rem 1.25rem;
+    border-radius: 10px;
+    margin-bottom: 1.25rem;
+    border-left: 4px solid;
+    font-size: 0.95rem;
+  }
+  
+  .callout.info {
+    background: #eff6ff;
+    border-color: var(--info);
+    color: #1e40af;
+  }
+  
+  .callout.success {
+    background: #f0fdf4;
+    border-color: var(--success);
+    color: #166534;
+  }
+  
+  .callout.warning {
+    background: #fef3c7;
+    border-color: var(--warning);
+    color: #92400e;
+  }
+  
+  .callout.danger {
+    background: #fef2f2;
+    border-color: var(--danger);
+    color: #991b1b;
+  }
+  
+  .callout strong {
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+  
+  .badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  
+  .badge.done { background: #d1fae5; color: #065f46; }
+  .badge.wip  { background: #fef3c7; color: #92400e; }
+  .badge.todo { background: #e5e7eb; color: #374151; }
+  
+  .diagram {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 1.5rem;
+    border-radius: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+    white-space: pre;
+  }
+  
+  .phase-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .phase-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    transition: all 0.2s;
+  }
+  
+  .phase-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+    border-color: var(--primary);
+  }
+  
+  .phase-card .phase-num {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  
+  .phase-card .phase-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0.25rem 0 0.5rem;
+  }
+  
+  .phase-card .phase-desc {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+  
+  .checklist {
+    list-style: none;
+    margin-left: 0;
+  }
+  
+  .checklist li {
+    padding-left: 1.75rem;
+    position: relative;
+    margin-bottom: 0.5rem;
+  }
+  
+  .checklist li::before {
+    content: "☐";
+    position: absolute;
+    left: 0;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+  }
+  
+  .checklist li.done::before {
+    content: "☑";
+    color: var(--success);
+  }
+  
+  @media print {
+    .sidebar { display: none; }
+    .container { display: block; }
+    .main { padding: 1rem; max-width: none; }
+    pre { background: #f1f5f9; color: #000; }
+    .diagram { background: #f1f5f9; color: #000; }
+  }
+  
+  @media (max-width: 768px) {
+    .container { grid-template-columns: 1fr; }
+    .sidebar {
+      position: static;
+      height: auto;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+    }
+    .main { padding: 2rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  
+  <aside class="sidebar">
+    <h1>User Management System</h1>
+    <p class="subtitle">Full-Stack Documentation</p>
+    <nav>
+      <a href="#overview" class="active">Overview</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#tech-stack">Tech Stack</a>
+      <a href="#phase1">Phase 1: Frontend</a>
+      <a href="#phase2">Phase 2: Backend</a>
+      <a href="#phase3">Phase 3: Docker</a>
+      <a href="#phase4">Phase 4: Deployment</a>
+      <a href="#concepts">Key Concepts</a>
+      <a href="#problems">Problems & Solutions</a>
+      <a href="#commands">Commands Reference</a>
+      <a href="#next">Next Steps</a>
+    </nav>
+  </aside>
+  
+  <main class="main">
+    
+    <h1>User Management System</h1>
+    <p class="hero-subtitle">A full-stack, containerized application built from scratch — Angular + Spring Boot + MySQL + Docker</p>
+    
+    <!-- ==================== OVERVIEW ==================== -->
+    <section id="overview">
+      <h2>1. Project Overview</h2>
+      
+      <h3>Goal</h3>
+      <p>Build a full-stack <strong>User Management System</strong> with:</p>
+      <ul>
+        <li>Modern Angular frontend (add, edit, view, delete users)</li>
+        <li>Spring Boot REST API backend</li>
+        <li>Persistent MySQL database</li>
+        <li>Containerized deployment on Linux</li>
+      </ul>
+      
+      <h3>What We Built</h3>
+      <ul>
+        <li><strong>Angular 20</strong> frontend served by <strong>Nginx</strong></li>
+        <li><strong>Spring Boot 3.5.16</strong> REST API</li>
+        <li><strong>MySQL 8</strong> database with persistence</li>
+        <li><strong>Docker containers</strong> running on a shared network</li>
+        <li>Full CRUD with validation, error handling, and CORS</li>
+      </ul>
+      
+      <div class="phase-grid">
+        <div class="phase-card">
+          <div class="phase-num">Phase 1</div>
+          <div class="phase-title">Frontend</div>
+          <div class="phase-desc">Angular components, services, routing, forms</div>
+        </div>
+        <div class="phase-card">
+          <div class="phase-num">Phase 2</div>
+          <div class="phase-title">Backend</div>
+          <div class="phase-desc">Spring Boot REST API with JPA + MySQL</div>
+        </div>
+        <div class="phase-card">
+          <div class="phase-num">Phase 3</div>
+          <div class="phase-title">Docker</div>
+          <div class="phase-desc">Multi-stage builds, networking, volumes</div>
+        </div>
+        <div class="phase-card">
+          <div class="phase-num">Phase 4</div>
+          <div class="phase-title">Deployment</div>
+          <div class="phase-desc">Running 3 containers on a Linux server</div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- ==================== ARCHITECTURE ==================== -->
+    <section id="architecture">
+      <h2>2. Architecture</h2>
+      
+      <h3>High-Level Diagram</h3>
+      <div class="diagram">┌─────────────────────────────────────────────────────────────┐
+│  BROWSER (User's Machine)                                   │
+│  http://&lt;server-ip&gt;:9090                                    │
+└──────────────────────┬──────────────────────────────────────┘
+                       │ HTTP (same origin)
+                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│  LINUX SERVER (Docker Host)                                 │
+│                                                             │
+│  ┌────────────────────────────────────────────────────┐    │
+│  │  Docker Network: user-mgmt-net                     │    │
+│  │                                                     │    │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌────────────┐ │    │
+│  │  │  frontend   │─▶│  backend    │─▶│  mysqldb   │ │    │
+│  │  │  (Angular   │  │  (Spring    │  │  (MySQL    │ │    │
+│  │  │   + Nginx)  │  │   Boot)     │  │   8.0)     │ │    │
+│  │  │  :80        │  │  :2002      │  │  :3306     │ │    │
+│  │  │  host:9090  │  │  host:2002  │  │  host:3306 │ │    │
+│  │  └─────────────┘  └─────────────┘  └────────────┘ │    │
+│  │                                                     │    │
+│  │  Volume: mysql-data (persistent)                   │    │
+│  └────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────┘</div>
+      
+      <h3>Request Flow</h3>
+      <ol>
+        <li>User opens <code>http://&lt;server&gt;:9090</code></li>
+        <li>Nginx (frontend container) serves Angular HTML/JS</li>
+        <li>Browser executes Angular → calls <code>/api/users</code> (relative path)</li>
+        <li>Browser sends request to <code>http://&lt;server&gt;:9090/api/users</code></li>
+        <li>Nginx proxies <code>/api/</code> → <code>http://backend:2002/api/users</code></li>
+        <li>Spring Boot receives request</li>
+        <li>Spring calls UserService → UserRepository → Hibernate</li>
+        <li>Hibernate queries MySQL at <code>mysqldb:3306</code></li>
+        <li>MySQL returns rows</li>
+        <li>Spring serializes to JSON</li>
+        <li>Nginx relays response to browser</li>
+        <li>Angular renders table</li>
+      </ol>
+    </section>
+    
+    <!-- ==================== TECH STACK ==================== -->
+    <section id="tech-stack">
+      <h2>3. Tech Stack</h2>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Layer</th>
+            <th>Technology</th>
+            <th>Version</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Frontend</td><td>Angular</td><td>20.x</td></tr>
+          <tr><td></td><td>TypeScript</td><td>5.x</td></tr>
+          <tr><td></td><td>RxJS</td><td>7.x</td></tr>
+          <tr><td>Frontend Server</td><td>Nginx</td><td>stable-alpine</td></tr>
+          <tr><td>Backend</td><td>Spring Boot</td><td>3.5.16</td></tr>
+          <tr><td></td><td>Java</td><td>17</td></tr>
+          <tr><td></td><td>Spring Data JPA</td><td>3.x</td></tr>
+          <tr><td></td><td>Hibernate</td><td>6.x</td></tr>
+          <tr><td></td><td>Jakarta Validation</td><td>3.x</td></tr>
+          <tr><td>Database</td><td>MySQL</td><td>8.0</td></tr>
+          <tr><td>Containerization</td><td>Docker</td><td>24+</td></tr>
+          <tr><td>Build Tools</td><td>Maven</td><td>3.9</td></tr>
+          <tr><td></td><td>npm</td><td>10+</td></tr>
+        </tbody>
+      </table>
+    </section>
+    
+    <!-- ==================== PHASE 1 ==================== -->
+    <section id="phase1">
+      <h2>4. Phase 1: Frontend Development</h2>
+      
+      <h3>4.1 Project Setup</h3>
+      <pre><code># Create Angular project
+ng new user-management
+
+# Install dependencies
+npm install</code></pre>
+      
+      <h3>4.2 Generated Components</h3>
+      <pre><code>ng g c pages/user-list
+ng g c pages/add-user
+ng g c pages/edit-user
+ng g c pages/user-details
+ng g c components/user-form
+ng g s services/user</code></pre>
+      
+      <h3>4.3 Project Structure</h3>
+      <pre><code>src/app/
+├── components/
+│   └── user-form/          Reusable add/edit form
+├── pages/
+│   ├── user-list/          List + search + actions
+│   ├── add-user/           Create user page
+│   ├── edit-user/          Update user page
+│   └── user-details/       View user page
+├── services/
+│   └── user.service.ts     API client
+├── models/
+│   └── user.model.ts       TypeScript interface
+├── app.routes.ts           Route definitions
+└── app.config.ts           App configuration</code></pre>
+      
+      <h3>4.4 User Model</h3>
+      <p><strong>File:</strong> <code>src/app/models/user.model.ts</code></p>
+      <pre><code>export interface User {
+  id?: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  role: 'USER' | 'ADMIN' | 'MANAGER';
+  status: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED';
+}</code></pre>
+      
+      <h3>4.5 API Service</h3>
+      <p><strong>File:</strong> <code>src/app/services/user.service.ts</code></p>
+      <pre><code>import { Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { User } from '../models/user.model';
+
+@Injectable({ providedIn: 'root' })
+export class UserService {
+  // Relative path — Nginx proxies /api/* to backend container
+  private readonly API_BASE = '/api/users';
+
+  constructor(private http: HttpClient) {}
+
+  getAll(): Observable&lt;User[]&gt; {
+    return this.http.get&lt;User[]&gt;(this.API_BASE)
+      .pipe(catchError(this.handleError));
+  }
+
+  getById(id: number): Observable&lt;User&gt; {
+    return this.http.get&lt;User&gt;(`${this.API_BASE}/${id}`)
+      .pipe(catchError(this.handleError));
+  }
+
+  create(user: User): Observable&lt;User&gt; {
+    return this.http.post&lt;User&gt;(this.API_BASE, user)
+      .pipe(catchError(this.handleError));
+  }
+
+  update(id: number, user: User): Observable&lt;User&gt; {
+    return this.http.put&lt;User&gt;(`${this.API_BASE}/${id}`, user)
+      .pipe(catchError(this.handleError));
+  }
+
+  delete(id: number): Observable&lt;void&gt; {
+    return this.http.delete&lt;void&gt;(`${this.API_BASE}/${id}`)
+      .pipe(catchError(this.handleError));
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    let message = 'Something went wrong';
+    if (error.error instanceof ErrorEvent) {
+      message = `Client error: ${error.error.message}`;
+    } else if (error.error?.errors && typeof error.error.errors === 'object') {
+      message = Object.entries(error.error.errors)
+        .map(([f, m]) =&gt; `${f}: ${m}`).join(', ') || error.error.message;
+    } else {
+      message = error.error?.message || `Server error: ${error.status}`;
+    }
+    console.error('[UserService]', message, error);
+    return throwError(() =&gt; new Error(message));
+  }
+}</code></pre>
+      
+      <h3>4.6 Routes</h3>
+      <p><strong>File:</strong> <code>src/app/app.routes.ts</code></p>
+      <pre><code>export const routes: Routes = [
+  { path: '', component: HomeComponent },
+  { path: 'users', component: UserListComponent },
+  { path: 'users/new', component: AddUserComponent },
+  { path: 'users/:id', component: UserDetailsComponent },
+  { path: 'users/:id/edit', component: EditUserComponent },
+  { path: '**', redirectTo: '' }
+];</code></pre>
+      
+      <h3>4.7 UI Features</h3>
+      <ul>
+        <li>Modern design with gradients, shadows, animations</li>
+        <li>Search box with real-time filter</li>
+        <li>Avatar circles with user initials</li>
+        <li>Color-coded role/status badges</li>
+        <li>Loading states, error alerts</li>
+        <li>Reusable form component for Add + Edit</li>
+      </ul>
+    </section>
+    
+    <!-- ==================== PHASE 2 ==================== -->
+    <section id="phase2">
+      <h2>5. Phase 2: Backend Development</h2>
+      
+      <h3>5.1 Spring Boot Project</h3>
+      <p>Generated from <a href="https://start.spring.io" target="_blank">start.spring.io</a>:</p>
+      <ul>
+        <li>Spring Boot 3.5.16</li>
+        <li>Java 17</li>
+        <li>Maven</li>
+        <li>Dependencies: Web, JPA, MySQL, Validation</li>
+      </ul>
+      
+      <h3>5.2 Package Structure</h3>
+      <pre><code>src/main/java/com/user_management/
+├── UserManagementApplication.java    Main class
+├── model/
+│   ├── User.java                     JPA entity
+│   ├── Role.java                     Enum
+│   └── Status.java                   Enum
+├── repository/
+│   └── UserRepository.java           Spring Data JPA
+├── service/
+│   └── UserService.java              Business logic
+├── controller/
+│   └── UserController.java           REST endpoints
+├── dto/
+│   └── UserRequest.java              Request payload
+├── exception/
+│   ├── GlobalExceptionHandler.java   Central error handling
+│   └── ResourceNotFoundException.java
+└── config/
+    ├── CorsConfig.java               CORS setup
+    └── DataSeeder.java               Auto-seed 3 users</code></pre>
+      
+      <h3>5.3 User Entity</h3>
+      <p><strong>File:</strong> <code>model/User.java</code></p>
+      <pre><code>@Entity
+@Table(name = "users")
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotBlank(message = "First name is required")
+    private String firstName;
+
+    @NotBlank(message = "Last name is required")
+    private String lastName;
+
+    @Email(message = "Invalid email format")
+    @Column(unique = true)
+    private String email;
+
+    private String phone;
+
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.USER;
+
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.ACTIVE;
+
+    // getters, setters, constructors
+}</code></pre>
+      
+      <h3>5.4 Repository</h3>
+      <p><strong>File:</strong> <code>repository/UserRepository.java</code></p>
+      <pre><code>@Repository
+public interface UserRepository extends JpaRepository&lt;User, Long&gt; {
+    Optional&lt;User&gt; findByEmail(String email);
+    boolean existsByEmail(String email);
+}</code></pre>
+      
+      <h3>5.5 Service Layer</h3>
+      <p><strong>File:</strong> <code>service/UserService.java</code></p>
+      <pre><code>@Service
+public class UserService {
+    private final UserRepository repo;
+
+    public UserService(UserRepository repo) { this.repo = repo; }
+
+    public List&lt;User&gt; getAllUsers() { return repo.findAll(); }
+
+    public User getUserById(Long id) {
+        return repo.findById(id).orElseThrow(() -&gt;
+            new ResourceNotFoundException("User not found: " + id));
+    }
+
+    public User createUser(UserRequest req) {
+        if (repo.existsByEmail(req.getEmail())) 
+            throw new RuntimeException("Email exists");
+        return repo.save(new User(...));
+    }
+
+    public User updateUser(Long id, UserRequest req) { /* ... */ }
+    public void deleteUser(Long id) { repo.delete(getUserById(id)); }
+}</code></pre>
+      
+      <h3>5.6 Controller</h3>
+      <p><strong>File:</strong> <code>controller/UserController.java</code></p>
+      <pre><code>@RestController
+@RequestMapping("/api/users")
+public class UserController {
+
+    private final UserService userService;
+    public UserController(UserService us) { this.userService = us; }
+
+    @GetMapping              
+    public List&lt;User&gt; getAll() { return userService.getAllUsers(); }
+
+    @GetMapping("/{id}")     
+    public User getById(@PathVariable Long id) { 
+        return userService.getUserById(id); 
+    }
+
+    @PostMapping             
+    public ResponseEntity&lt;User&gt; create(@Valid @RequestBody UserRequest req) { 
+        /* returns 201 */ 
+    }
+
+    @PutMapping("/{id}")     
+    public User update(@PathVariable Long id, @Valid @RequestBody UserRequest req) { 
+        /* returns updated user */ 
+    }
+
+    @DeleteMapping("/{id}")  
+    public ResponseEntity&lt;Void&gt; delete(@PathVariable Long id) { 
+        /* returns 204 */ 
+    }
+}</code></pre>
+      
+      <h3>5.7 Global Exception Handler</h3>
+      <p><strong>File:</strong> <code>exception/GlobalExceptionHandler.java</code></p>
+      <ul>
+        <li>Handles <code>ResourceNotFoundException</code> → 404</li>
+        <li>Handles validation errors → 400 with field-level details</li>
+        <li>Handles <code>RuntimeException</code> → 400</li>
+        <li>Handles all others → 500</li>
+      </ul>
+      
+      <h3>5.8 CORS Configuration</h3>
+      <p><strong>File:</strong> <code>config/CorsConfig.java</code></p>
+      <pre><code>@Configuration
+public class CorsConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/api/**")
+                .allowedOriginPatterns("*")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD")
+                .allowedHeaders("*")
+                .exposedHeaders("*")
+                .allowCredentials(true)
+                .maxAge(3600);
+    }
+}</code></pre>
+      
+      <div class="callout warning">
+        <strong>⚠️ Key insight</strong>
+        Use <code>allowedOriginPatterns</code> (not <code>allowedOrigins</code>) when <code>allowCredentials(true)</code>. Spring rejects wildcards in the latter.
+      </div>
+      
+      <h3>5.9 Data Seeder</h3>
+      <p><strong>File:</strong> <code>config/DataSeeder.java</code></p>
+      <pre><code>@Component
+public class DataSeeder implements CommandLineRunner {
+    // Inserts 3 users on first startup if table is empty
+}</code></pre>
+      
+      <h3>5.10 Application Properties</h3>
+      <p><strong>File:</strong> <code>src/main/resources/application.properties</code></p>
+      <pre><code>spring.application.name=user_management
+server.port=2002
+
+spring.datasource.url=${SPRING_DATASOURCE_URL}
+spring.datasource.username=${SPRING_DATASOURCE_USERNAME}
+spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect</code></pre>
+      
+      <div class="callout info">
+        <strong>💡 Best practice</strong>
+        Uses environment variables — no hardcoded credentials.
+      </div>
+    </section>
+    
+    <!-- ==================== PHASE 3 ==================== -->
+    <section id="phase3">
+      <h2>6. Phase 3: Docker Containerization</h2>
+      
+      <h3>6.1 MySQL Database</h3>
+      <p><strong>Dockerfile:</strong></p>
+      <pre><code>FROM mysql:8.0
+EXPOSE 3306
+ENV MYSQL_ROOT_PASSWORD=rootpass123
+ENV MYSQL_DATABASE=user_management_db
+ENV MYSQL_USER=userapp
+ENV MYSQL_PASSWORD=userapp123
+COPY init.sql /docker-entrypoint-initdb.d/01-init.sql</code></pre>
+      
+      <p><strong>init.sql:</strong></p>
+      <pre><code>CREATE DATABASE IF NOT EXISTS user_management_db;
+USE user_management_db;
+
+CREATE USER IF NOT EXISTS 'userapp'@'%' IDENTIFIED BY 'userapp123';
+GRANT ALL PRIVILEGES ON user_management_db.* TO 'userapp'@'%';
+
+CREATE TABLE IF NOT EXISTS users (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    phone VARCHAR(50),
+    role VARCHAR(20) NOT NULL,
+    status VARCHAR(20) NOT NULL
+);
+
+INSERT INTO users VALUES ...; -- seed users</code></pre>
+      
+      <p><strong>Build and run:</strong></p>
+      <pre><code>docker build -t mydb .
+docker run -d --name mysqldb -p 3306:3306 mydb</code></pre>
+      
+      <h3>6.2 Backend Dockerfile</h3>
+      <p>Multi-stage build for a small production image:</p>
+      <pre><code># Stage 1: Build
+FROM maven:3.9-eclipse-temurin-17 AS build
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# Stage 2: Runtime
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 2002
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:2002/actuator/health || exit 1
+ENTRYPOINT ["java", "-jar", "app.jar"]</code></pre>
+      
+      <p><strong>Run with env file:</strong></p>
+      <pre><code>docker run -d \
+  --name backend \
+  --network user-mgmt-net \
+  -p 2002:2002 \
+  --env-file backend.env \
+  user-management-backend:v1</code></pre>
+      
+      <p><strong>backend.env:</strong></p>
+      <pre><code>SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/user_management_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+SPRING_DATASOURCE_USERNAME=root
+SPRING_DATASOURCE_PASSWORD=rootpass123
+SERVER_PORT=2002</code></pre>
+      
+      <h3>6.3 Frontend Dockerfile</h3>
+      <pre><code># Stage 1: Build Angular
+FROM node:20-alpine AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build -- --configuration=production
+
+# Stage 2: Serve with Nginx
+FROM nginx:stable-alpine
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist/*/browser /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]</code></pre>
+      
+      <p><strong>nginx.conf:</strong></p>
+      <pre><code>server {
+    listen 80;
+    server_name localhost;
+    root /usr/share/nginx/html;
+    index index.html;
+
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml;
+
+    # Proxy API calls to backend container
+    location /api/ {
+        proxy_pass http://backend:2002/api/;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_method $request_method;
+    }
+
+    # Angular SPA routing
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # Static asset caching
+    location ~* \.(?:css|js|jpg|jpeg|gif|png|svg|ico|woff2?)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+}</code></pre>
+      
+      <p><strong>Build and run:</strong></p>
+      <pre><code>docker build -t user-management-frontend:v1 .
+
+docker run -d \
+  --name frontend \
+  --network user-mgmt-net \
+  -p 9090:80 \
+  user-management-frontend:v1</code></pre>
+      
+      <h3>6.4 Docker Network</h3>
+      <pre><code>docker network create user-mgmt-net</code></pre>
+      
+      <p><strong>Why:</strong> Enables containers to reach each other by name:</p>
+      <ul>
+        <li><code>frontend</code> → <code>backend:2002</code></li>
+        <li><code>backend</code> → <code>mysqldb:3306</code></li>
+      </ul>
+    </section>
+    
+    <!-- ==================== PHASE 4 ==================== -->
+    <section id="phase4">
+      <h2>7. Phase 4: Deployment</h2>
+      
+      <h3>7.1 Startup Sequence</h3>
+      <pre><code># 1. Start MySQL
+docker start mysqldb
+docker network connect user-mgmt-net mysqldb
+
+# 2. Start backend
+docker rm -f backend
+docker run -d \
+  --name backend \
+  --network user-mgmt-net \
+  -p 2002:2002 \
+  --env-file backend.env \
+  user-management-backend:v3
+
+# 3. Start frontend
+docker rm -f frontend
+docker run -d \
+  --name frontend \
+  --network user-mgmt-net \
+  -p 9090:80 \
+  user-management-frontend:v2</code></pre>
+      
+      <h3>7.2 Verification Commands</h3>
+      <pre><code># Check all containers
+docker ps
+
+# Check backend logs
+docker logs --tail 20 backend
+
+# Test backend directly
+curl http://localhost:2002/api/users
+
+# Test through proxy
+curl http://localhost:9090/api/users
+
+# Test OPTIONS preflight
+curl -i -X OPTIONS http://localhost:9090/api/users/6 \
+  -H "Origin: http://localhost:9090" \
+  -H "Access-Control-Request-Method: DELETE"</code></pre>
+      
+      <h3>7.3 Final Working State</h3>
+      <pre><code>$ docker ps
+CONTAINER ID   IMAGE                          STATUS         PORTS                    NAMES
+xxx            user-management-frontend:v2    Up 2 hours     0.0.0.0:9090-&gt;80/tcp     frontend
+yyy            user-management-backend:v3     Up 2 hours     0.0.0.0:2002-&gt;2002/tcp   backend
+zzz            mydb                           Up 3 hours     0.0.0.0:3306-&gt;3306/tcp   mysqldb</code></pre>
+      
+      <div class="callout success">
+        <strong>✅ Working</strong>
+        Browser: <code>http://&lt;server-ip&gt;:9090</code> → full app works.
+      </div>
+    </section>
+    
+    <!-- ==================== CONCEPTS ==================== -->
+    <section id="concepts">
+      <h2>8. Key Concepts Learned</h2>
+      
+      <h3>Docker</h3>
+      <ul>
+        <li><strong>Multi-stage builds</strong> — build with Maven/Node, run with minimal JRE/Nginx</li>
+        <li><strong>Container networking</strong> — containers reach each other by name</li>
+        <li><strong>Volumes</strong> — <code>mysql-data</code> persists database across container restarts</li>
+        <li><strong>Health checks</strong> — Docker detects when a service is ready</li>
+        <li><strong><code>.dockerignore</code></strong> — keeps image small by excluding junk</li>
+        <li><strong><code>--env-file</code></strong> — cleaner than many <code>-e</code> flags</li>
+      </ul>
+      
+      <h3>Nginx</h3>
+      <ul>
+        <li><strong>Reverse proxy</strong> — forward <code>/api/*</code> to another service</li>
+        <li><strong>SPA routing</strong> — <code>try_files $uri $uri/ /index.html</code> for Angular</li>
+        <li><strong>Gzip compression</strong> — smaller responses</li>
+        <li><strong>Static asset caching</strong> — faster repeat visits</li>
+      </ul>
+      
+      <h3>Spring Boot</h3>
+      <ul>
+        <li><strong>Environment variables</strong> — <code>application.properties</code> reads <code>${VAR}</code></li>
+        <li><strong><code>@RestControllerAdvice</code></strong> — global exception handling</li>
+        <li><strong>JPA/Hibernate</strong> — entity ↔ table mapping</li>
+        <li><strong>Bean validation</strong> — <code>@NotBlank</code>, <code>@Email</code></li>
+        <li><strong>CORS</strong> — <code>allowedOriginPatterns</code> vs <code>allowedOrigins</code></li>
+      </ul>
+      
+      <h3>Angular</h3>
+      <ul>
+        <li><strong>Standalone components</strong> — no NgModule needed</li>
+        <li><strong>Services</strong> — singleton, <code>providedIn: 'root'</code></li>
+        <li><strong>RxJS Observables</strong> — async data streams</li>
+        <li><strong>Relative URLs</strong> — <code>/api/users</code> works behind proxies</li>
+      </ul>
+      
+      <h3>Networking</h3>
+      <ul>
+        <li><strong><code>localhost</code> inside container</strong> = the container itself</li>
+        <li><strong>Container name</strong> = DNS name on Docker network</li>
+        <li><strong>Same origin</strong> = browser doesn't trigger CORS</li>
+        <li><strong>Preflight OPTIONS</strong> — browser asks permission before PUT/DELETE</li>
+      </ul>
+    </section>
+    
+    <!-- ==================== PROBLEMS & SOLUTIONS ==================== -->
+    <section id="problems">
+      <h2>9. Problems & Solutions</h2>
+      
+      <p>Every real project hits obstacles. Here is the complete log of <strong>every problem we encountered</strong> during this build, along with the diagnosis and fix — <strong>21 issues total</strong>.</p>
+      
+      <div class="problem">
+        <div class="problem-header">
+          <div class="problem-num">1</div>
+          <div class="problem-title">Git Repository Initialized in Wrong Directory</div>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label symptom">Symptom</span>
+          <p><code>fatal: not a git repository (or any of the parent directories): .git</code></p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label cause">Root Cause</span>
+          <p>Ran <code>git init</code> inside <code>C:\Users\dasar\</code> (home directory) instead of the project folder. Git treated the entire home directory as a repository.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label fix">Fix</span>
+          <pre><code>cd C:\Users\dasar
+Remove-Item -Recurse -Force .git
+cd C:\Users\dasar\Downloads\frontend_user-management
+git init</code></pre>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label lesson">Lesson</span>
+          <p>Always <code>cd</code> into the exact project folder before running <code>git init</code>. Verify with <code>git rev-parse --show-toplevel</code>.</p>
+        </div>
+      </div>
+      
+      <div class="problem">
+        <div class="problem-header">
+          <div class="problem-num">2</div>
+          <div class="problem-title">Node.js / npm Not Recognized</div>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label symptom">Symptom</span>
+          <p><code>'node' is not recognized as an internal or external command</code></p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label cause">Root Cause</span>
+          <p>Node.js wasn't installed, or the PowerShell session hadn't picked up the new PATH after installation.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label fix">Fix</span>
+          <p>Install from <a href="https://nodejs.org" target="_blank">nodejs.org</a>, then <strong>close and reopen PowerShell</strong> (crucial). Verify with <code>node -v</code> and <code>npm -v</code>.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label lesson">Lesson</span>
+          <p>After installing any tool, always restart the terminal to reload PATH.</p>
+        </div>
+      </div>
+      
+      <div class="problem">
+        <div class="problem-header">
+          <div class="problem-num">3</div>
+          <div class="problem-title">Docker Not Installed / Daemon Not Running</div>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label symptom">Symptom</span>
+          <p><code>docker: command not found</code> or <code>Cannot connect to the Docker daemon</code></p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label cause">Root Cause</span>
+          <p>Docker Desktop wasn't installed, or the daemon service wasn't running.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label fix">Fix</span>
+          <p>Install Docker Desktop, restart PC, launch the app, wait for the whale icon to stabilize. Verify: <code>docker --version</code> and <code>docker ps</code>.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label lesson">Lesson</span>
+          <p>Docker needs the daemon running — not just the CLI. Always check <code>docker ps</code> first.</p>
+        </div>
+      </div>
+      
+      <div class="problem">
+        <div class="problem-header">
+          <div class="problem-num">4</div>
+          <div class="problem-title">Port 8080 Already in Use (Jenkins Conflict)</div>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label symptom">Symptom</span>
+          <p><code>Error starting userland proxy: listen tcp4 0.0.0.0:8080: bind: address already in use</code></p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label cause">Root Cause</span>
+          <p>Jenkins CI/CD was running on port 8080 (a common default). Docker couldn't bind to it.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label fix">Fix</span>
+          <p>Diagnose: <code>ss -tulpn | grep :8080</code>. Then use a different host port: <code>docker run -p 9090:80 ...</code></p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label lesson">Lesson</span>
+          <p>8080 is the most contested port in DevOps. Check availability before assigning.</p>
+        </div>
+      </div>
+      
+      <div class="problem">
+        <div class="problem-header">
+          <div class="problem-num">5</div>
+          <div class="problem-title">Port 3000 EACCES on Windows</div>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label symptom">Symptom</span>
+          <p><code>Error: listen EACCES: permission denied ::1:3000</code></p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label cause">Root Cause</span>
+          <p>Windows reserves certain port ranges (3000-3060, 5000, etc.) for Hyper-V and system services via <code>netsh</code>.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label fix">Fix</span>
+          <p>Check reserved ranges: <code>netsh interface ipv4 show excludedportrange protocol=tcp</code>. Then use an unreserved port — we chose 4000 for json-server.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label lesson">Lesson</span>
+          <p>On Windows, some ports are off-limits even if nothing appears to use them.</p>
+        </div>
+      </div>
+      
+      <div class="problem">
+        <div class="problem-header">
+          <div class="problem-num">6</div>
+          <div class="problem-title">MySQL Container Reports Unknown Database</div>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label symptom">Symptom</span>
+          <p><code>java.sql.SQLSyntaxErrorException: Unknown database 'user_management_db'</code></p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label cause">Root Cause</span>
+          <p>The database was never created in the MySQL container. Spring Boot assumed it existed and failed on startup.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label fix">Fix</span>
+          <p>Two approaches used. First manually: <code>CREATE DATABASE user_management_db;</code>. Later made it reproducible by baking an <code>init.sql</code> into a custom MySQL image.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label lesson">Lesson</span>
+          <p>Containers don't come with databases. Use <code>init.sql</code> in <code>/docker-entrypoint-initdb.d/</code> for reproducibility.</p>
+        </div>
+      </div>
+      
+      <div class="problem">
+        <div class="problem-header">
+          <div class="problem-num">7</div>
+          <div class="problem-title">Backend Can't Reach MySQL Container</div>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label symptom">Symptom</span>
+          <p><code>java.sql.SQLException: Communications link failure</code></p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label cause">Root Cause</span>
+          <p>Backend and MySQL containers were on <strong>different Docker networks</strong>. Backend's <code>localhost</code> referred to itself, not MySQL.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label fix">Fix</span>
+          <pre><code>docker network create user-mgmt-net
+docker network connect user-mgmt-net mysqldb
+docker network connect user-mgmt-net backend</code></pre>
+          <p>Then use the <strong>container name</strong> as hostname: <code>jdbc:mysql://mysqldb:3306/...</code></p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label lesson">Lesson</span>
+          <p>Container names are DNS names on custom networks. <code>localhost</code> never works between containers.</p>
+        </div>
+      </div>
+      
+      <div class="problem">
+        <div class="problem-header">
+          <div class="problem-num">8</div>
+          <div class="problem-title">Access Denied for 'root'@'172.18.0.3'</div>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label symptom">Symptom</span>
+          <p><code>java.sql.SQLException: Access denied for user 'root'@'172.18.0.3' (using password: YES)</code></p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label cause">Root Cause</span>
+          <p>We used a placeholder (<code>YOUR_MYSQL_PASSWORD</code>) instead of the real password.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label fix">Fix</span>
+          <p>Found the real password: <code>docker exec mysqldb env | grep MYSQL_ROOT_PASSWORD</code>. Updated <code>backend.env</code> with the actual value.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label lesson">Lesson</span>
+          <p>Placeholders look similar to real passwords. Always verify before assuming.</p>
+        </div>
+      </div>
+      
+      <div class="problem">
+        <div class="problem-header">
+          <div class="problem-num">9</div>
+          <div class="problem-title">@NotBlank Cannot Be Resolved</div>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label symptom">Symptom</span>
+          <p><code>NotBlank cannot be resolved to a type</code> in Eclipse</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label cause">Root Cause</span>
+          <p>Spring Boot's validation starter was missing. Since Spring Boot 2.3, hibernate-validator isn't included by default.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label fix">Fix</span>
+          <pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-validation&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+          <p>Then right-click project → Maven → Update Project (Alt+F5).</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label lesson">Lesson</span>
+          <p>Validation is a separate starter. Add it explicitly when using <code>@NotBlank</code>, <code>@Email</code>, etc.</p>
+        </div>
+      </div>
+      
+      <div class="problem">
+        <div class="problem-header">
+          <div class="problem-num">10</div>
+          <div class="problem-title">Invalid Maven Artifact Names in pom.xml</div>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label symptom">Symptom</span>
+          <p><code>Could not find artifact org.springframework.boot:spring-boot-starter-webmvc</code></p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label cause">Root Cause</span>
+          <p>The generated <code>pom.xml</code> had wrong artifact names. Spring Boot has ONE test starter, not one per module.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label fix">Fix</span>
+          <p>Replaced the entire <code>pom.xml</code> dependencies block:</p>
+          <ul>
+            <li>❌ <code>spring-boot-starter-webmvc</code> → ✅ <code>spring-boot-starter-web</code></li>
+            <li>❌ <code>spring-boot-starter-actuator-test</code> → ✅ <code>spring-boot-starter-test</code></li>
+            <li>❌ <code>spring-boot-starter-data-jpa-test</code> → ✅ <code>spring-boot-starter-test</code></li>
+            <li>❌ <code>spring-boot-starter-webmvc-test</code> → ✅ <code>spring-boot-starter-test</code></li>
+          </ul>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label lesson">Lesson</span>
+          <p>Never trust generated <code>pom.xml</code> blindly. Verify artifact names on Maven Central.</p>
+        </div>
+      </div>
+      
+      <div class="problem">
+        <div class="problem-header">
+          <div class="problem-num">11</div>
+          <div class="problem-title">Spring Boot 3.2.x End-of-Life Warnings</div>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label symptom">Symptom</span>
+          <p><code>OSS support for Spring Boot 3.2.x ended on 2024-12-31</code></p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label cause">Root Cause</span>
+          <p>The project was generated with an outdated Spring Boot version.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label fix">Fix</span>
+          <p>Changed <code>&lt;version&gt;3.2.5&lt;/version&gt;</code> to <code>&lt;version&gt;3.5.16&lt;/version&gt;</code> in <code>pom.xml</code>, then Maven → Update Project.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label lesson">Lesson</span>
+          <p>Always use the latest stable version for new projects. Old versions stop getting security patches.</p>
+        </div>
+      </div>
+      
+      <div class="problem">
+        <div class="problem-header">
+          <div class="problem-num">12</div>
+          <div class="problem-title">Content-Type 'text/xml' Not Supported</div>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label symptom">Symptom</span>
+          <p><code>{"message":"Content-Type 'text/xml;charset=UTF-8' is not supported","status":500}</code></p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label cause">Root Cause</span>
+          <p>The POST request was missing the <code>Content-Type: application/json</code> header, so Spring defaulted to XML handling and rejected the JSON body.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label fix">Fix</span>
+          <pre><code>curl -X POST http://localhost:2002/api/users \
+  -H "Content-Type: application/json" \
+  -d '{"firstName":"John",...}'</code></pre>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label lesson">Lesson</span>
+          <p>REST APIs require explicit <code>Content-Type</code> headers. curl doesn't add JSON type automatically.</p>
+        </div>
+      </div>
+      
+      <div class="problem">
+        <div class="problem-header">
+          <div class="problem-num">13</div>
+          <div class="problem-title">403 Forbidden on POST/PUT/DELETE (CORS Preflight)</div>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label symptom">Symptom</span>
+          <p><code>Delete failed: Server error: 403</code>. Preflight OPTIONS returned <code>403 Invalid CORS request</code>.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label cause">Root Cause</span>
+          <p>Two compounding issues:</p>
+          <ol>
+            <li><code>CorsConfig</code> had a fixed <code>allowedOrigins</code> list (4200, 4201, 59153) that didn't include <code>9090</code></li>
+            <li>Spring rejects <code>allowedOrigins("*")</code> when <code>allowCredentials(true)</code> is set</li>
+          </ol>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label fix">Fix</span>
+          <p>Used <code>allowedOriginPatterns</code> instead — supports wildcards with credentials:</p>
+          <pre><code>registry.addMapping("/api/**")
+    .allowedOriginPatterns("*")
+    .allowedMethods("GET","POST","PUT","DELETE","OPTIONS","PATCH","HEAD")
+    .allowedHeaders("*")
+    .exposedHeaders("*")
+    .allowCredentials(true)
+    .maxAge(3600);</code></pre>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label lesson">Lesson</span>
+          <p><code>allowedOrigins</code> vs <code>allowedOriginPatterns</code> — the latter is required for wildcards with credentials enabled.</p>
+        </div>
+      </div>
+      
+      <div class="problem">
+        <div class="problem-header">
+          <div class="problem-num">14</div>
+          <div class="problem-title">Nginx Not Forwarding DELETE/PUT</div>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label symptom">Symptom</span>
+          <p>GET via proxy worked; POST/DELETE returned 403 from Nginx.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label cause">Root Cause</span>
+          <p>Nginx's default proxy behavior doesn't forward all HTTP methods unless explicitly told to.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label fix">Fix</span>
+          <p>Added method forwarding and proper headers to <code>nginx.conf</code>:</p>
+          <pre><code>location /api/ {
+    proxy_pass http://backend:2002/api/;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_method $request_method;
+}</code></pre>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label lesson">Lesson</span>
+          <p>Nginx proxies are not transparent by default. Explicitly allow methods and set headers.</p>
+        </div>
+      </div>
+      
+      <div class="problem">
+        <div class="problem-header">
+          <div class="problem-num">15</div>
+          <div class="problem-title">Container Name Conflict</div>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label symptom">Symptom</span>
+          <p><code>Conflict. The container name "/backend" is already in use by container "f7ada54ff57f..."</code></p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label cause">Root Cause</span>
+          <p>An old container with the same name still existed (in Exited state) from a previous failed run.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label fix">Fix</span>
+          <pre><code>docker rm -f backend
+docker run -d --name backend ...</code></pre>
+          <p>Or one-liner:</p>
+          <pre><code>docker rm -f backend 2>/dev/null; docker run -d --name backend ...</code></pre>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label lesson">Lesson</span>
+          <p>Docker won't let you reuse a name. Always clean up before rerunning.</p>
+        </div>
+      </div>
+      
+      <div class="problem">
+        <div class="problem-header">
+          <div class="problem-num">16</div>
+          <div class="problem-title">Docker Image Build Cached Wrong Version</div>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label symptom">Symptom</span>
+          <p>Rebuilt image but new code didn't take effect — old CORS error persisted.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label cause">Root Cause</span>
+          <p>Docker's layer caching reused old layers, or we ran <code>:v1</code> while the new image was tagged <code>:v2</code>.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label fix">Fix</span>
+          <ol>
+            <li>Use versioned tags: <code>v1</code>, <code>v2</code>, <code>v3</code></li>
+            <li>Force rebuild: <code>docker build --no-cache -t ... .</code></li>
+            <li>Remove old image: <code>docker rmi user-management-backend:v2</code></li>
+          </ol>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label lesson">Lesson</span>
+          <p>Docker tags matter. When in doubt, use unique tags per build and verify with <code>docker images</code>.</p>
+        </div>
+      </div>
+      
+      <div class="problem">
+        <div class="problem-header">
+          <div class="problem-num">17</div>
+          <div class="problem-title">Backend Container Exits Immediately</div>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label symptom">Symptom</span>
+          <p><code>docker ps</code> shows backend as "Exited (1)".</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label cause">Root Cause</span>
+          <p>Spring Boot couldn't initialize — wrong DB password, unreachable DB, missing env vars, or port conflict inside container.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label fix">Fix</span>
+          <p>Always check logs first:</p>
+          <pre><code>docker logs backend</code></pre>
+          <p>The Java stack trace tells you exactly what failed. In our case: <code>Access denied for user 'root'</code> — fixed by using the correct password in <code>backend.env</code>.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label lesson">Lesson</span>
+          <p>Container exits are always logged. <code>docker logs &lt;name&gt;</code> is your first diagnostic command.</p>
+        </div>
+      </div>
+      
+      <div class="problem">
+        <div class="problem-header">
+          <div class="problem-num">18</div>
+          <div class="problem-title">Port 9090 "Already in Use"</div>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label symptom">Symptom</span>
+          <p><code>bind: address already in use</code> when starting frontend on 9090.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label cause">Root Cause</span>
+          <p>An old frontend container was still holding port 9090.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label fix">Fix</span>
+          <pre><code>docker rm -f frontend
+docker run -d -p 9090:80 ...</code></pre>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label lesson">Lesson</span>
+          <p>Before running new containers, always remove old ones with the same name or port.</p>
+        </div>
+      </div>
+      
+      <div class="problem">
+        <div class="problem-header">
+          <div class="problem-num">19</div>
+          <div class="problem-title">Angular Build Fails with npm ci</div>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label symptom">Symptom</span>
+          <p><code>npm ci can only install packages when your package.json and package-lock.json are in sync</code></p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label cause">Root Cause</span>
+          <p><code>package-lock.json</code> was missing or out of date. <code>npm ci</code> requires an exact lock file.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label fix">Fix</span>
+          <p>Either commit <code>package-lock.json</code> to the repo, or change Dockerfile to use <code>npm install</code> instead of <code>npm ci</code>.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label lesson">Lesson</span>
+          <p><code>npm ci</code> is stricter and faster, but requires a lock file. For fresh projects, use <code>npm install</code>.</p>
+        </div>
+      </div>
+      
+      <div class="problem">
+        <div class="problem-header">
+          <div class="problem-num">20</div>
+          <div class="problem-title">Frontend Still Showing Old Placeholder Text</div>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label symptom">Symptom</span>
+          <p>Browser displayed "User List works!" instead of the actual user table.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label cause">Root Cause</span>
+          <p>The component was still the placeholder generated by <code>ng generate component</code> — the real code was never applied.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label fix">Fix</span>
+          <p>Replaced the placeholder <code>user-list.component.ts</code> with the real component, plus its HTML/CSS files.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label lesson">Lesson</span>
+          <p>When scaffolding components, always verify the file contents changed. Placeholder text is a red flag.</p>
+        </div>
+      </div>
+      
+      <div class="problem">
+        <div class="problem-header">
+          <div class="problem-num">21</div>
+          <div class="problem-title">Docker Network Not Persisting Between Restarts</div>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label symptom">Symptom</span>
+          <p>After restarting the MySQL container, backend lost connection.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label cause">Root Cause</span>
+          <p><code>docker run</code> without <code>--network</code> attaches the container to the default bridge, not our custom network. Starting a stopped container sometimes reassigns networks if it was created without one.</p>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label fix">Fix</span>
+          <p>Always specify <code>--network user-mgmt-net</code> when creating containers. If a container already exists without it, connect it manually:</p>
+          <pre><code>docker network connect user-mgmt-net mysqldb</code></pre>
+        </div>
+        <div class="problem-section">
+          <span class="problem-label lesson">Lesson</span>
+          <p>Networks are set at container creation. To change later, use <code>docker network connect</code>.</p>
+        </div>
+      </div>
+      
+      <div class="callout success">
+        <strong>🎯 Result</strong>
+        All 21 problems diagnosed and fixed. Final state: 3 containers running, full CRUD working end-to-end, browser displays user table with data from MySQL.
+      </div>
+    </section>
+    
+    <!-- ==================== COMMANDS ==================== -->
+    <section id="commands">
+      <h2>10. Commands Reference</h2>
+      
+      <h3>Docker</h3>
+      <pre><code># Images
+docker build -t &lt;name&gt;:&lt;tag&gt; .
+docker images
+docker rmi &lt;image&gt;
+
+# Containers
+docker run -d --name &lt;name&gt; ...
+docker ps
+docker ps -a
+docker stop &lt;name&gt;
+docker rm &lt;name&gt;
+docker rm -f &lt;name&gt;
+docker logs -f &lt;name&gt;
+docker exec -it &lt;name&gt; sh
+
+# Networks
+docker network create &lt;name&gt;
+docker network ls
+docker network inspect &lt;name&gt;
+docker network connect &lt;net&gt; &lt;container&gt;
+
+# Volumes
+docker volume ls
+docker volume rm &lt;name&gt;</code></pre>
+      
+      <h3>Git</h3>
+      <pre><code>git init
+git branch -M main
+git add .
+git commit -m "message"
+git remote add origin &lt;url&gt;
+git push -u origin main
+git pull</code></pre>
+      
+      <h3>MySQL</h3>
+      <pre><code>docker exec -it mysqldb mysql -u root -p
+
+SHOW DATABASES;
+USE user_management_db;
+SHOW TABLES;
+SELECT * FROM users;</code></pre>
+      
+      <h3>Testing APIs</h3>
+      <pre><code># GET
+curl http://localhost:2002/api/users
+
+# POST
+curl -X POST http://localhost:2002/api/users \
+  -H "Content-Type: application/json" \
+  -d '{"firstName":"John",...}'
+
+# PUT
+curl -X PUT http://localhost:2002/api/users/1 \
+  -H "Content-Type: application/json" \
+  -d '{...}'
+
+# DELETE
+curl -X DELETE http://localhost:2002/api/users/1
+
+# OPTIONS (preflight)
+curl -i -X OPTIONS http://localhost:9090/api/users/6 \
+  -H "Origin: http://localhost:9090" \
+  -H "Access-Control-Request-Method: DELETE"</code></pre>
+    </section>
+    
+    <!-- ==================== NEXT STEPS ==================== -->
+    <section id="next">
+      <h2>11. Next Steps</h2>
+      
+      <h3>Short-Term</h3>
+      <ul class="checklist">
+        <li class="done">MySQL container running</li>
+        <li class="done">Backend code + Docker image</li>
+        <li class="done">Frontend code + Docker image</li>
+        <li class="done">Full CRUD working end-to-end</li>
+        <li>Docker Compose (one file, one command)</li>
+        <li>Push all repos to GitHub</li>
+        <li>Write READMEs with screenshots</li>
+        <li>Add <code>.env.example</code> templates</li>
+      </ul>
+      
+      <h3>Medium-Term</h3>
+      <ul class="checklist">
+        <li>Kubernetes deployment (Deployments, Services, Secrets)</li>
+        <li>CI/CD with GitHub Actions</li>
+        <li>Push images to Docker Hub / GHCR</li>
+        <li>Add JUnit + Jasmine tests</li>
+        <li>Add Swagger API documentation</li>
+      </ul>
+      
+      <h3>Long-Term</h3>
+      <ul class="checklist">
+        <li>JWT authentication</li>
+        <li>Role-based access control</li>
+        <li>Flyway database migrations</li>
+        <li>Prometheus + Grafana monitoring</li>
+        <li>Managed database (AWS RDS, GCP Cloud SQL)</li>
+        <li>Cloud deployment (AWS/GCP/DigitalOcean)</li>
+      </ul>
+      
+      <h2>Summary</h2>
+      
+      <h3>What We Built</h3>
+      <p>A full-stack user management system with:</p>
+      <ul>
+        <li>Modern Angular frontend</li>
+        <li>Spring Boot REST API</li>
+        <li>MySQL persistence</li>
+        <li>Docker containerization</li>
+        <li>Nginx reverse proxy</li>
+        <li>Proper CORS, validation, error handling</li>
+      </ul>
+      
+      <h3>Skills Demonstrated</h3>
+      <ul>
+        <li><strong>Full-stack development</strong> — frontend + backend + database</li>
+        <li><strong>Containerization</strong> — Dockerfiles, networks, volumes, env files</li>
+        <li><strong>DevOps</strong> — Deployment, troubleshooting, log analysis</li>
+        <li><strong>Problem-solving</strong> — Diagnosed and fixed 21+ real issues</li>
+        <li><strong>Enterprise patterns</strong> — Reverse proxy, environment configs, stateless APIs</li>
+      </ul>
+      
+      <div class="callout success">
+        <strong>🏆 Congratulations</strong>
+        You've built a production-shaped full-stack application from scratch. Take a moment to appreciate what you've accomplished — this is real engineering, not a tutorial.
+      </div>
+    </section>
+    
+    <hr style="margin: 3rem 0; border: none; border-top: 1px solid var(--border);">
+    
+    <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+      <strong>User Management System</strong><br>
+      Angular + Spring Boot + MySQL + Docker<br>
+      Full-Stack, Containerized, Production-Shaped<br>
+      <span class="badge done">Working End-to-End</span>
+    </p>
+    
+  </main>
+</div>
+
+<script>
+  // Smooth scroll for nav links
+  document.querySelectorAll('.sidebar nav a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        document.querySelectorAll('.sidebar nav a').forEach(x => x.classList.remove('active'));
+        a.classList.add('active');
+      }
+    });
+  });
+  
+  // Highlight nav on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.sidebar nav a');
+  
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      const top = section.offsetTop;
+      if (window.pageYOffset >= top - 100) {
+        current = section.getAttribute('id');
+      }
+    });
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + current) {
+        link.classList.add('active');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
